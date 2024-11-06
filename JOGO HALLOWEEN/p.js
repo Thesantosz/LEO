@@ -8,7 +8,7 @@ function criarEEmbaralharBaralho() {
     let baralho = [...simbolos, ...simbolos]; // Duplicar para criar pares
     for (let i = baralho.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [baralho[i], baralho[j]] = [baralho[j], baralho[i]]; // Troca
+        [baralho[i], baralho[j]] = [baralho[j], baralho[i]]; // Troca com  o método Fisher-Yates, onde ele ira trocar de lugar com o numero sorteado.
     }
     return baralho;
 }
