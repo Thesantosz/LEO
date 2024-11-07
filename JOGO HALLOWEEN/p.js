@@ -1,14 +1,12 @@
-let ask = require('readline-sync');
-
-let tabuleiroAtualizado = []
+const ask = require('readline-sync');
 
 // Função para criar e embaralhar o baralho
 function criarEEmbaralharBaralho() {
-    const simbolos = ['🍎', '🍌', '🍇', '🍊', '🍉', '🍓', '🍒', '🍍'];
+    const simbolos = ['🎃', '👻', '🕸️', '🕷️', '🦇', '🍬', '🖤', '🧛‍♂️']
     let baralho = [...simbolos, ...simbolos]; // Duplicar para criar pares
     for (let i = baralho.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [baralho[i], baralho[j]] = [baralho[j], baralho[i]]; // Troca com  o método Fisher-Yates, onde ele ira trocar de lugar com o numero sorteado.
+        [baralho[i], baralho[j]] = [baralho[j], baralho[i]]; // Troca
     }
     return baralho;
 }
@@ -26,8 +24,6 @@ function exibirTabuleiro(baralho, revelado) {
 }
 
 // Função para exibir o tabuleiro pronto (com todas as cartas reveladas)
-
-
 function exibirTabuleiroPronto(baralho) {
     let saida = '';
     for (let i = 0; i < baralho.length; i++) {
@@ -40,24 +36,12 @@ function exibirTabuleiroPronto(baralho) {
     console.log(saida);
 }
 
-
-function exibirTabuleiro(baralho, revelado) {
-    let saida = '';
-    for (let i = 0; i < baralho.length; i++) {
-        saida += revelado[i] ? `${baralho[i]}    ` : '❓    ';
-        if ((i + 1) % 5 === 0) {
-            saida += '\n';
-        }
-    }
-    console.log(saida);
-}
 // Função principal do jogo
 function jogar() {
     const baralho = criarEEmbaralharBaralho();
-    const revelado = Array(baralho.length).fill(false); //fill preencher os elementos de um array com um determinado valor. Essa função é muito útil quando precisamos criar um array com
-                                                       // valores repetidos ou quando queremos substituir todos os elementos de um array por um único valor.
+    const revelado = Array(baralho.length).fill(false); // Array para controlar as cartas reveladas
     let paresEncontrados = 0;
-    const totalPares = baralho.length / 2; //apenas as figuras em sua copia
+    const totalPares = baralho.length / 2; // Total de pares a serem encontrados
     
     const numeroSecreto = 100; // Número secreto que revela o tabuleiro e zera o jogo
     
@@ -66,24 +50,36 @@ function jogar() {
         exibirTabuleiro(baralho, revelado);
         
         // Pergunta ao jogador qual carta ele quer escolher
-        const escolha = ask.question('Escolha a primeira carta (0 a 15) ');
+        let escolha = ask.questionInt('Escolha a primeira carta (0 a 15): ');
         
         // Verifica se o jogador escolheu o número secreto
         if (escolha === numeroSecreto) {
             console.log("Você escolheu o número secreto! O jogo será zerado...");
             exibirTabuleiroPronto(baralho);  // Exibe o tabuleiro completo
-            console.log("Jogo zerado! Voce trapaceou!");
-            rl.close();  // Fecha o jogo
-            return;  // Encerra a função e o jogo
+            console.log("Jogo zerado! Você trapaceou!");
+            return;  // Encerra o jogo
         }
 
-        // Caso contrário, processa a escolha normalmente
+        // Valida se a escolha está no intervalo correto e se a carta já foi revelada
+        if (escolha < 0 || escolha >= baralho.length || revelado[escolha]) {
+            console.log('Escolha inválida ou carta já revelada. Tente novamente.');
+            return;
+        }
+        
+        revelado[escolha] = true; // Marca a primeira carta como revelada
+        exibirTabuleiro(baralho, revelado); // Exibe o tabuleiro após a primeira escolha
+        
+        let segundaEscolha = ask.questionInt('Escolha a segunda carta (0 a 15): ');
 
-        revelado[escolha] = true; //ira pegar o numero que o usuario escolher e ver na array se ele bate com o igual
-        exibirTabuleiro(baralho, revelado);   //-------------o revelado tem os valores todos iguais a false, assim que o usuario escolhe um ele vira true
-
-        const segundaEscolha = ask.question('Escolha a segunda carta (0 a 15): ');
-        revelado[segundaEscolha] = true; //-------------- se o numero que ele escolher e os dois forem true ele acertou
+        // Valida a segunda escolha
+        if (segundaEscolha < 0 || segundaEscolha >= baralho.length || revelado[segundaEscolha]) {
+            console.log('Escolha inválida ou carta já revelada. Tente novamente.');
+            revelado[escolha] = false; // Desmarca a primeira carta
+            return;
+        }
+        
+        revelado[segundaEscolha] = true; // Marca a segunda carta como revelada
+        exibirTabuleiro(baralho, revelado); // Exibe o tabuleiro após a segunda escolha
 
         // Verifica se as cartas correspondem
         if (baralho[escolha] === baralho[segundaEscolha]) {
@@ -92,16 +88,12 @@ function jogar() {
         } else {
             console.log('Não é um par. Tente novamente.');
             revelado[escolha] = false;
-            revelado[segundaEscolha] = false; //----------após ele errar os dois escolhidos viram false denovo
+            revelado[segundaEscolha] = false; // Vira as cartas novamente
         }
     }
 
     console.log('Parabéns! Você encontrou todos os pares!');
-    rl.close();
 }
-
-// Função para ler a entrada do usuário
-
 
 // Inicia o jogo
 jogar();
