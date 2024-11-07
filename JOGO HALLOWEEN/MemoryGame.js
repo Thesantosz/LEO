@@ -31,7 +31,7 @@ function exibirTabuleiroPronto(baralho) {
             saida += '\n'
         }
     }
-    console.log('\nTabuleiro Pronto (Todas as cartas reveladas):')
+    console.log('\nReady Board (All cards revealed):')
     console.log(saida)
 }
 
@@ -49,30 +49,30 @@ function jogar() {
         exibirTabuleiro(baralho, revelado)
         
         // Pergunta ao jogador qual carta ele quer escolher
-        let escolha = ask.questionInt('Escolha a primeira carta (0 a 15): ')
+        let escolha = ask.questionInt('Pick the first card (0 to 15): ')
         
         // Verifica se o jogador escolheu o número secreto
         if (escolha === numeroSecreto) {
-            console.log("Você escolheu o número secreto! O jogo será zerado...")
+            console.log("You've chosen the secret number! The game will be reset...")
             exibirTabuleiroPronto(baralho)  // Exibe o tabuleiro completo
-            console.log("Jogo zerado! Você trapaceou!")
+            console.log("Game zero! You cheated!")
            return
        }
 
         // Valida se a escolha está no intervalo correto e se a carta já foi revelada
         if (escolha < 0 || escolha >= baralho.length || revelado[escolha]) {
-            console.log('Escolha inválida ou carta já revelada. Tente novamente.')
+            console.log('Invalid choice or card already revealed. Please try again.')
             return
         }
         
         revelado[escolha] = true
         exibirTabuleiro(baralho, revelado)
         
-        let segundaEscolha = ask.questionInt('Escolha a segunda carta (0 a 15): ')
+        let segundaEscolha = ask.questionInt('Pick the second card (0 to 15): ')
 
         // Valida a segunda escolha
         if (segundaEscolha < 0 || segundaEscolha >= baralho.length || revelado[segundaEscolha]) {
-            console.log('Escolha inválida ou carta já revelada. Tente novamente.')
+            console.log('Invalid choice or card already revealed. Please try again.')
             revelado[escolha] = false
             return
         }
@@ -82,15 +82,15 @@ function jogar() {
 
         // Verifica se as cartas correspondem
         if (baralho[escolha] === baralho[segundaEscolha]) {
-            console.log('Você encontrou um par!')
+            console.log('You have found a pair!')
             paresEncontrados++
         } else {
-            console.log('Não é um par. Tente novamente.')
+            console.log('It is not a pair. Please try again.')
             revelado[escolha] = false
             revelado[segundaEscolha] = false
         }
     }
 
-    console.log('Parabéns! Você encontrou todos os pares!')
+    console.log('Congratulations! You have found all the pairs!')
 }
 jogar()
